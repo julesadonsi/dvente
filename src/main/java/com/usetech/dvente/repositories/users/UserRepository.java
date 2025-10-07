@@ -1,0 +1,11 @@
+package com.usetech.dvente.repositories.users;
+
+import com.usetech.dvente.entities.users.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+public interface UserRepository extends JpaRepository<User, UUID> {
+    Optional<User> findByEmail(String email);
+}
