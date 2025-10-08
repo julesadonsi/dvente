@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "shop_url_histories")
 public class ShopUrlHistory extends BaseModel {
 
     @ManyToOne(fetch = FetchType.LAZY)

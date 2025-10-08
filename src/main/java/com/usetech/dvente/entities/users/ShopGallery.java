@@ -9,7 +9,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "shop_galleries")
 @Builder
 public class ShopGallery extends BaseModel {
 

@@ -9,9 +9,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "mobile_money_providers")
 @Builder
-public class MobileMonneyProvider extends BaseModel {
+public class PaymentProvider extends BaseModel {
 
     @Column(length = 50)
     private String name;

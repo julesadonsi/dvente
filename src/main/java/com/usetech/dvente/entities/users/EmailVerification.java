@@ -19,7 +19,6 @@ import java.util.Random;
 @AllArgsConstructor
 @Builder
 @Table(
-        name = "email_verifications",
         indexes = {
                 @Index(name = "idx_email_code", columnList = "email, code", unique = true),
                 @Index(name = "idx_expired_at", columnList = "expiredAt")

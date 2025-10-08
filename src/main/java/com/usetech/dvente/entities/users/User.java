@@ -18,7 +18,12 @@ import java.util.Collections;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
+@Table(
+        name = "users",
+        indexes = {
+                @Index(name = "idx_email", columnList = "email", unique = true),
+                @Index(name = "idx_phone", columnList = "phone", unique = true)
+        })
 @Builder
 public class User extends BaseModel implements UserDetails {
 

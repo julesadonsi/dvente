@@ -1,6 +1,5 @@
 package com.usetech.dvente.entities.users;
 
-
 import com.usetech.dvente.entities.BaseModel;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +11,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "shops")
 @Builder
 public class Shop extends BaseModel {
 
@@ -75,7 +73,7 @@ public class Shop extends BaseModel {
     private List<ShopGallery> galleries;
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MobileMonneyProvider> paymentProviders;
+    private List<PaymentProvider> paymentProviders;
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShopUrlHistory> shopnameHistory;
