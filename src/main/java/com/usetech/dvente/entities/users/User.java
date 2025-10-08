@@ -5,8 +5,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @Getter
@@ -15,7 +20,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "users")
 @Builder
-public class User extends BaseModel {
+public class User extends BaseModel implements UserDetails {
 
     @Column(unique = true)
     private String email;
@@ -70,5 +75,41 @@ public class User extends BaseModel {
     @Override
     public String toString() {
         return (phone != null && !phone.isEmpty()) ? phone : email;
+    }
+
+    // ----------------------
+    // UserDetails methods
+    // ----------------------
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (role != null) {
+            return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isActive;
     }
 }

@@ -1,9 +1,12 @@
 package com.usetech.dvente.services.users;
 
 import com.usetech.dvente.entities.users.User;
+import com.usetech.dvente.entities.users.UserRole;
 import com.usetech.dvente.repositories.users.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -24,6 +27,7 @@ public class UserService {
                 .name(name)
                 .email(email)
                 .password(encoder.encode(password))
+                .role(UserRole.CLIENT)
                 .build();
         return userRepository.save(user);
     }
@@ -36,6 +40,13 @@ public class UserService {
             throw new RuntimeException("Invalid credentials");
         }
         return user;
+    }
+
+
+    public User getUserByEmail(String email) {
+        return userRepository.
+                findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
     }
 
 }
