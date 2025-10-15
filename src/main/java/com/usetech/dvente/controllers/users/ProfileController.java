@@ -53,7 +53,7 @@ public class ProfileController {
         );
     }
 
-    @PatchMapping(value = "profile/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateProfile(
             @Valid @ModelAttribute UpdateUserProfileRequest request,
             Authentication authentication

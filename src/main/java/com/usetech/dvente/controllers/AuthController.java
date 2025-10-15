@@ -50,29 +50,6 @@ public class AuthController {
     private final EmailService emailService;
 
 
-    @PostMapping("/register")
-    public AuthResponse register(@RequestBody RegisterRequest request, HttpServletResponse response) {
-        if(userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new CustomException("Email déjà utilisé");
-        }
-        User user = userService.register(
-                request.getName(),
-                request.getEmail(),
-                request.getPassword()
-        );
-        eventPublisher.publishEvent(
-                new UserRegisteredEvent(user, this)
-        );
-
-        String token = jwtService.generateAccessToken(user);
-        String refresh = jwtService.generateRefreshToken(user);
-
-        cookieService.addAccessTokenCookie(response, token);
-        cookieService.addRefreshTokenCookie(response, refresh);
-
-        return new AuthResponse(token, refresh, UserResponse.fromUser(user));
-    }
-
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginRequest request, HttpServletResponse response) {
         User user = userService.login(request.getEmail(), request.getPassword());
@@ -128,7 +105,7 @@ public class AuthController {
         cookieService.clearAuthCookies(response);
     }
 
-    @PostMapping("/send-verification-code")
+    @PostMapping("/send/otp")
     public ResponseEntity<?> sendVerificationCode(
             @Valid @RequestBody SendVerificationCodeRequest request) {
 
@@ -174,29 +151,59 @@ public class AuthController {
 
 
 
-    /**
-     * Vérifie un code de vérification.
-     */
-    @PostMapping("/verify-code")
-    public ResponseEntity<?> verifyCode(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
-        String code = request.get("code");
 
-        if (email == null || code == null) {
-            throw new CustomException("Email et code sont requis");
+    /**
+     * Vérifie un code de vérification et crée le compte utilisateur.
+     */
+    @PostMapping("/register")
+    public ResponseEntity<?> verifyCodeAndRegister(
+            @Valid @RequestBody RegisterRequest request,
+            HttpServletResponse response) {
+
+        String email = request.getEmail();
+        String code = request.getCode();
+
+        if (!verificationService.isCodeValid(email, code)) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("message", "Code invalide ou expiré");
+            error.put("verified", false);
+            return ResponseEntity.badRequest().body(error);
         }
-        boolean isValid = verificationService.isCodeValid(email, code);
-        if (isValid) {
+
+        if (userRepository.findByEmail(email).isPresent()) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("message", "Cet email est déjà utilisé");
+            error.put("field", "email");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        }
+
+        try {
             verificationService.markAsUsed(email, code);
-            return ResponseEntity.ok(Map.of(
-                    "message", "Code vérifié avec succès",
-                    "verified", true
+            User user = userService.register(
+                    request.getName(),
+                    request.getEmail(),
+                    request.getPassword()
+            );
+            user.setEmailConfirmed(true);
+            userRepository.save(user);
+
+            eventPublisher.publishEvent(new UserRegisteredEvent(user, this));
+            String token = jwtService.generateAccessToken(user);
+            String refresh = jwtService.generateRefreshToken(user);
+
+            cookieService.addAccessTokenCookie(response, token);
+            cookieService.addRefreshTokenCookie(response, refresh);
+
+            return ResponseEntity.ok(new AuthResponse(
+                    token,
+                    refresh,
+                    UserResponse.fromUser(user)
             ));
-        } else {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "message", "Code invalide ou expiré",
-                    "verified", false
-            ));
+
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Une erreur est survenue lors de la création du compte");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
 
