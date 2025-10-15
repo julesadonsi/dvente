@@ -42,7 +42,7 @@ public class EmailVerification  extends BaseModel {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    public String generateCode() {
+    public void generateCode() {
         Random random = new SecureRandom();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 6; i++) {
@@ -50,7 +50,6 @@ public class EmailVerification  extends BaseModel {
         }
         this.code = sb.toString();
         this.expiredAt = LocalDateTime.now().plusMinutes(15);
-        return this.code;
     }
 
     public boolean isExpired() {

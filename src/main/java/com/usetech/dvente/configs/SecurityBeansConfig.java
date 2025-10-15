@@ -1,6 +1,6 @@
 package com.usetech.dvente.configs;
 
-import com.usetech.dvente.repositories.users.UserRepository;
+import com.usetech.dvente.repositories.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;

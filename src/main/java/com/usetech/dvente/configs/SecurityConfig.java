@@ -1,6 +1,5 @@
 package com.usetech.dvente.configs;
 
-import com.usetech.dvente.services.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final CustomUserDetailsService userDetailsService;
+    private final AsyncConfig.CustomUserDetailsService userDetailsService;
 
     private static final String[] WHITE_LIST_URLS = {
             "/api/auth/**",

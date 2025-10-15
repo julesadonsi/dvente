@@ -58,4 +58,36 @@ public class EmailService {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Sends a verification code to the specified email address using a predefined template.
+     *
+     * @param email the recipient's email address
+     * @param code the verification code to be sent
+     * @return true if the email is successfully sent, otherwise throws a RuntimeException
+     */
+    public boolean sendVerificationCode(String email, String code) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            helper.setFrom(fromEmail);
+            helper.setTo(email);
+            helper.setSubject("Code de verification - " + appName + "!");
+            Context context = new Context();
+
+            context.setVariable("code", code);
+            context.setVariable("appUrl", appUrl);
+            context.setVariable("appName", appName);
+            context.setVariable("expirationMinutes", 15);
+
+            String htmlContent = templateEngine.process("emails/verificationCode", context);
+            helper.setText(htmlContent, true);
+
+            mailSender.send(message);
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
