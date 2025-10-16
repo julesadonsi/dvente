@@ -2,8 +2,7 @@ package com.usetech.dvente.entities.products;
 
 import com.usetech.dvente.entities.BaseModel;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.util.StringUtils;
@@ -12,6 +11,9 @@ import org.springframework.util.StringUtils;
 @Table
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Category extends BaseModel {
 
     @Column(nullable = false, unique = true)

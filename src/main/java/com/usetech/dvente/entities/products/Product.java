@@ -3,8 +3,7 @@ package com.usetech.dvente.entities.products;
 import com.usetech.dvente.entities.BaseModel;
 import com.usetech.dvente.entities.users.Shop;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -15,6 +14,9 @@ import java.util.Set;
 @Table
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product extends BaseModel {
 
     @Column(nullable = false)
