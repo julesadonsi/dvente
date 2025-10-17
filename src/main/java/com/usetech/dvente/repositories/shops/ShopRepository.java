@@ -135,4 +135,6 @@ public interface ShopRepository extends JpaRepository<Shop, UUID> {
      */
     @Query("SELECT s FROM Shop s WHERE s.status = 'WAITING' ORDER BY s.createdAt ASC")
     List<Shop> findShopsPendingVerification();
+
+    boolean existsByUserId(UUID userId);
 }

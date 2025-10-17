@@ -21,7 +21,7 @@ public class FileStorageService {
      * Sauvegarde un fichier avatar et retourne son URL.
      */
     public String saveAvatar(MultipartFile file) {
-        return saveFile(file);
+        return saveFile(file, "avatars");
     }
 
     /**
@@ -32,11 +32,29 @@ public class FileStorageService {
     }
 
     /**
+     * Sauvegarde un document (PDF, DOC, DOCX) et retourne son URL.
+     *
+     * @param file le fichier à sauvegarder
+     * @param documentType le type de document (ex: "ifu", "rcm")
+     * @return l'URL du fichier sauvegardé
+     */
+    public String saveDocument(MultipartFile file, String documentType) {
+        return saveFile(file, "documents/" + documentType);
+    }
+
+    /**
+     * Supprime un document.
+     */
+    public void deleteDocument(String documentUrl) {
+        deleteFile(documentUrl);
+    }
+
+    /**
      * Sauvegarde un fichier dans un sous-dossier spécifique.
      */
-    private String saveFile(MultipartFile file) {
+    private String saveFile(MultipartFile file, String subFolder) {
         try {
-            String fileDir = uploadBasePath + "/" + "avatars";
+            String fileDir = uploadBasePath + "/" + subFolder;
             Path uploadPath = Paths.get(fileDir);
 
             if (!Files.exists(uploadPath)) {
@@ -52,7 +70,7 @@ public class FileStorageService {
             Path filePath = uploadPath.resolve(filename);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            return "/uploads/" + "avatars" + "/" + filename;
+            return "/uploads/" + subFolder + "/" + filename;
 
         } catch (IOException e) {
             throw new RuntimeException("Échec de la sauvegarde du fichier: " + e.getMessage());

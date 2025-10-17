@@ -4,7 +4,6 @@ import com.usetech.dvente.configs.AsyncConfig;
 import com.usetech.dvente.entities.users.EmailVerification;
 import com.usetech.dvente.entities.users.User;
 import com.usetech.dvente.events.users.UserRegisteredEvent;
-import com.usetech.dvente.exceptions.CustomException;
 import com.usetech.dvente.repositories.UserRepository;
 import com.usetech.dvente.requests.LoginRequest;
 import com.usetech.dvente.requests.RefreshRequest;
@@ -63,9 +62,12 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public RefreshTokenResponse refresh(@RequestBody(required = false) RefreshRequest request,
-                                        HttpServletRequest httpRequest,
-                                        HttpServletResponse response) {
+    public RefreshTokenResponse refresh(
+            @RequestBody(required = false) RefreshRequest request,
+            HttpServletRequest httpRequest,
+            HttpServletResponse response
+    )
+    {
         String refreshToken = null;
 
         if (httpRequest.getCookies() != null) {
@@ -148,9 +150,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
-
-
-
 
     /**
      * Vérifie un code de vérification et crée le compte utilisateur.

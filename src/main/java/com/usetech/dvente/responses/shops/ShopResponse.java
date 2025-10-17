@@ -154,4 +154,26 @@ public class ShopResponse {
         }
         return null;
     }
+
+    public static ShopResponse fromShop(Shop shop) {
+        return ShopResponse.builder()
+                .id(shop.getId())
+                .shopName(shop.getShopName())
+                .shopUrl(shop.getShopUrl())
+                .email(shop.getEmail())
+                .address(shop.getAddress())
+                .whatsappNumber(shop.getWhatsappNumber())
+                .description(shop.getDescription())
+                .numeroIfu(shop.getNumeroIfu())
+                .numRcm(shop.getNumRcm())
+                .city(shop.getCity())
+                .country(shop.getCountry())
+                .domaineActivity(shop.getDomaineActivity())
+                .regimeFiscale(shop.getRegimeFiscale())
+                .ifuDocument(shop.getIfuDocument())
+                .rcmDocument(shop.getRcmDocument())
+                .createdAt(String.valueOf(shop.getCreatedAt()))
+                .updatedAt(String.valueOf(shop.getUpdatedAt()))
+                .build();
+    }
 }

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.Map;
+
 @Service
 public class EmailService {
 
@@ -123,4 +125,26 @@ public class EmailService {
             throw new RuntimeException(e);
         }
     }
+
+    public void sendHtmlEmail(String to, String subject, String templateName, Map<String, Object> variables) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            Context context = new Context();
+            context.setVariables(variables);
+
+            String htmlContent = templateEngine.process(templateName, context);
+
+            helper.setFrom(fromEmail);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(htmlContent, true);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de l'envoi de l'email: " + e.getMessage());
+        }
+    }
+
 }
